@@ -1,0 +1,16 @@
+<header class="bg-white shadow-sm">
+    <nav class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+        <a href="/" class="text-xl font-bold text-gray-900">Packaging Market</a>
+        <div class="flex items-center gap-6">
+            <a href="/catalog/" class="text-gray-600 hover:text-gray-900">Каталог</a>
+            <a href="/cart/" class="text-gray-600 hover:text-gray-900">Корзина</a>
+            {% if user.is_authenticated %}
+                <span class="text-gray-700">{{ user.email }}</span>
+                <a href="/users/logout/" class="text-red-600 hover:text-red-800">Выйти</a>
+            {% else %}
+                <a href="/users/login/" class="text-blue-600 hover:text-blue-800">Войти</a>
+                <a href="/users/register/" class="text-green-600 hover:text-green-800">Регистрация</a>
+            {% endif %}
+        </div>
+    </nav>
+</header>
