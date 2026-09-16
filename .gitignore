@@ -50,3 +50,6 @@ dump.rdb
 # Secrets
 *.pem
 *.key
+*.bak
+*.tmp
+*~
