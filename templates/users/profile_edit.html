@@ -1,0 +1,53 @@
+{% extends "base/base.html" %}
+
+{% block title %}Редактирование профиля — Packaging Market{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Редактировать профиль</h1>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!--
+            Телефон показываем, но не даём менять.
+            В будущем можно сделать отдельный flow с подтверждением
+            через SMS — это сложнее, не сейчас.
+        -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                Телефон
+            </label>
+            <input
+                type="text"
+                value="{{ user.phone }}"
+                disabled
+                class="form-input bg-gray-100 cursor-not-allowed"
+            >
+            <p class="mt-1 text-xs text-gray-500">
+                Для смены телефона обратитесь в поддержку.
+            </p>
+        </div>
+
+        {% include "includes/form_field.html" with field=form.email %}
+        {% include "includes/form_field.html" with field=form.first_name %}
+        {% include "includes/form_field.html" with field=form.last_name %}
+        {% include "includes/form_field.html" with field=form.birth_date %}
+
+        <div class="flex gap-3">
+            <button
+                type="submit"
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition"
+            >
+                Сохранить
+            </button>
+            <a
+                href="{% url 'users:profile' %}"
+                class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-md transition"
+            >
+                Отмена
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

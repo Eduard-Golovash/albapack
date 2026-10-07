@@ -1,2 +1,26 @@
-/* Базовые стили */
-body { font-family: system-ui, -apple-system, sans-serif; }
+/* Базовые стили для полей формы, которые используются в forms.py */
+.form-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    background-color: #ffffff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Общий контейнер для формы авторизации */
+.form-card {
+    max-width: 28rem;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}

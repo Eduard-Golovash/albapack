@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, resolve, Resolver404
 from django.utils.deprecation import MiddlewareMixin
 
 # URL-ы, доступные без заполненного профиля
@@ -23,18 +23,27 @@ class ProfileCompletionMiddleware(MiddlewareMixin):
             return None
 
         # Пропускаем админку и статику
-        if request.path.startswith("/admin/") or request.path.startswith("/static/") or request.path.startswith("/media/"):
+        if request.path.startswith(("/admin/", "/static/", "/media/")):
             return None
 
         # Уже заполнен — пропускаем
         if request.user.profile_completed:
             return None
 
-        # Смотрим, куда идёт запрос
-        match = request.resolver_match
-        if match and match.view_name in EXEMPT_URL_NAMES:
+        # Резолвим URL сами — на этапе process_request request.resolver_match ещё пуст
+        try:
+            match = resolve(request.path_info)
+        except Resolver404:
+            return None  # пусть дальше разбирается Django (вернёт 404)
+
+        current = (
+            f"{match.namespace}:{match.url_name}"
+            if match.namespace
+            else match.url_name
+        )
+
+        if current in EXEMPT_URL_NAMES:
             return None
 
-        # Редирект на заполнение профиля
         return redirect("users:profile_complete")
     

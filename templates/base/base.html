@@ -6,21 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Packaging Market{% endblock %}</title>
 
-    <!-- HTMX -->
+    <!-- HTMX — для динамических обновлений без перезагрузки страницы -->
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-    <!-- Alpine.js -->
+    <!-- Alpine.js — для клиентской интерактивности (модалки, табы и т.п.) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
-    <!-- Tailwind (dev) -->
+    <!-- Tailwind CSS — для быстрой вёрстки (в проде заменим на собранный CSS) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
-<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<!--
+    hx-headers — глобальный заголовок для всех HTMX-запросов.
+    Django требует CSRF-токен для POST-запросов через HTMX,
+    поэтому передаём его в заголовке X-CSRFToken.
+-->
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-gray-50 min-h-screen flex flex-col">
 
     {% include "includes/header.html" %}
 
-    <main class="min-h-screen">
+    <main class="flex-1">
+        <!--
+            Блок flash-сообщений.
+            Django messages — это временные уведомления, которые view
+            добавляет через messages.success()/error()/info()/warning().
+            Они живут до следующего запроса и автоматически очищаются.
+        -->
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 pt-4">
+                {% for message in messages %}
+                    <!--
+                        {% comment %}
+                        message.tags — это строка вида "success", "error", "info".
+                        Мы используем её, чтобы подобрать цвет через Alpine-выражение.
+                        Здесь можно было бы использовать {% if message.tags == "success" %},
+                        но так короче.
+                        {% endcomment %}
+                    -->
+                    <div
+                        x-data="{ show: true }"
+                        x-show="show"
+                        x-init="setTimeout(() => show = false, 5000)"
+                        class="mb-3 rounded-md px-4 py-3 text-sm
+                            {% if message.tags == 'success' %}bg-green-100 text-green-800 border border-green-300
+                            {% elif message.tags == 'error' %}bg-red-100 text-red-800 border border-red-300
+                            {% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-800 border border-yellow-300
+                            {% else %}bg-blue-100 text-blue-800 border border-blue-300{% endif %}"
+                    >
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {% block content %}{% endblock %}
     </main>
 
