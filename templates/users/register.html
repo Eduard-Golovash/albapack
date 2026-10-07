@@ -1,0 +1,52 @@
+{% extends "base/base.html" %}
+
+{% block title %}Регистрация — Packaging Market{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">Регистрация</h1>
+    <p class="text-sm text-gray-600 mb-6">
+        Укажите номер телефона и пароль. Остальное заполните после регистрации.
+    </p>
+
+    <!--
+        novalidate отключает встроенную HTML5-валидацию.
+        Мы полагаемся на Django-форму — она гибче и даёт свои сообщения.
+    -->
+    <form method="post" novalidate>
+        <!-- CSRF-токен обязателен для всех POST-форм в Django -->
+        {% csrf_token %}
+
+        {% include "includes/form_field.html" with field=form.phone %}
+        {% include "includes/form_field.html" with field=form.password1 %}
+        {% include "includes/form_field.html" with field=form.password2 %}
+
+        <!--
+            non_field_errors — это ошибки, которые не привязаны к конкретному
+            полю (мы их добавляли через form.add_error(None, ...)).
+            Сейчас таких нет, но на будущее.
+        -->
+        {% if form.non_field_errors %}
+            <div class="mb-4 text-sm text-red-600">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <button
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition"
+        >
+            Зарегистрироваться
+        </button>
+    </form>
+
+    <p class="mt-4 text-sm text-gray-600 text-center">
+        Уже есть аккаунт?
+        <a href="{% url 'users:login' %}" class="text-blue-600 hover:text-blue-800">
+            Войти
+        </a>
+    </p>
+</div>
+{% endblock %}

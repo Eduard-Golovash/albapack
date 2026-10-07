@@ -1,0 +1,46 @@
+{% extends "base/base.html" %}
+
+{% block title %}Вход — Packaging Market{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Вход в систему</h1>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% include "includes/form_field.html" with field=form.username %}
+        {% include "includes/form_field.html" with field=form.password %}
+
+        {% if form.non_field_errors %}
+            <div class="mb-4 text-sm text-red-600">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!--
+            Если middleware/логин-required передал ?next=..., сохраняем его
+            в скрытом поле, чтобы после логина вернуть пользователя туда.
+        -->
+        {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% endif %}
+
+        <button
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition"
+        >
+            Войти
+        </button>
+    </form>
+
+    <p class="mt-4 text-sm text-gray-600 text-center">
+        Ещё нет аккаунта?
+        <a href="{% url 'users:register' %}" class="text-green-600 hover:text-green-800">
+            Зарегистрироваться
+        </a>
+    </p>
+</div>
+{% endblock %}
