@@ -6,11 +6,11 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    # Приложение users — раскомментировали
+    # Приложения — раскомментировали
     path("users/", include("apps.users.urls")),
+    path("catalog/", include("apps.catalog.urls")),
 
     # Остальные раскомментируем позже, когда будут готовы их urls.py
-    # path("", include("apps.catalog.urls")),
     # path("cart/", include("apps.cart.urls")),
     # path("orders/", include("apps.orders.urls")),
     # path("payments/", include("apps.payments.urls")),
